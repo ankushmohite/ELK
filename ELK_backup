@@ -1,0 +1,111 @@
+DELETE /_snapshot/my_backup
+
+ 
+
+PUT _snapshot/my_backup
+
+{
+
+  "type": "fs",
+
+  "settings": {
+
+    "location": "/root/elk-index-bkp",
+
+    "compress": true
+
+  }
+
+}
+
+ 
+
+PUT _snapshot/my_backup/snapshot_457&458&459&460?wait_for_completion=false
+
+{
+
+  "indices": "logstash-000457,logstash-000458,logstash-000459,logstash-000460"
+
+}
+
+ 
+
+#Track your snapshot location in server
+
+GET _snapshot/my_backup/snapshot_427&428/_status
+
+ 
+
+ 
+
+ 
+
+GET /_cat/indices
+
+ 
+
+ 
+
+#for restore
+
+ 
+
+ 
+
+POST /_snapshot/my_backup/snapshot_7to10may/_restore?wait_for_completion=false
+
+{
+
+  "indices": "logstash-000001"
+
+}
+
+ 
+
+GET /_snapshot/my_backup/snapshot_2025_05_20/_status
+
+ 
+
+ 
+
+GET erp-reporting-jasper-be/_search
+
+{
+
+  "query": {
+
+    "bool": {
+
+      "must": [
+
+        { "range": { "@timestamp": { "gte": "2024-09-01T00:00:00", "lte": "2025-08-31T23:59:59" }}},
+
+        { "match": { "module": "Short Term Policy Underwriting" }},
+
+        { "match": { "action": "report_download" }}
+
+      ]
+
+    }
+
+  },
+
+  "_source": [
+
+    "report_name",
+
+    "@timestamp",
+
+    "employee_name",
+
+    "employee_id",
+
+    "logical_location_emp",
+
+    "pc_location"
+
+  ],
+
+  "size": 100
+
+}
